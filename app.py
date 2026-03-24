@@ -7,7 +7,9 @@ st.set_page_config(page_title="Customer Retention Dashboard", layout="wide")
 st.title("📊 Customer Retention Intelligence System")
 
 # Initialize BigQuery client
-client = bigquery.Client()
+client = bigquery.Client.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
 
 # Query
 query = """
