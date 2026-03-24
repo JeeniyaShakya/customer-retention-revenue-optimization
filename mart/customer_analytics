@@ -1,0 +1,11 @@
+CREATE OR REPLACE VIEW customer_retention.customer_analytics AS
+SELECT
+r.customer_unique_id,
+r.Recency,
+r.Frequency,
+r.Monetary,
+r.Segment,
+c.Churn_Probability
+FROM customer_retention.rfm_segmentation r
+LEFT JOIN customer_retention.churn_prediction c
+ON r.customer_unique_id = c.customer_unique_id
