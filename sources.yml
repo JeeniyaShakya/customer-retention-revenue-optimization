@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: olist
+    database: civil-partition-489110-t9
+    schema: customer_retention
+    tables:
+      - name: orders_dataset
+      - name: customers_dataset
+      - name: order_items_dataset
+      - name: products_dataset  # <--- Check if this should be 'products'
+      - name: product_category_name_translation # <--- Add this if you see it in BigQuery
