@@ -1,91 +1,96 @@
-# 🚀 Customer Retention & Revenue Optimization System
-
-## 📌 Overview
-This project builds an end-to-end data pipeline to analyze customer behavior, identify churn risk, and optimize revenue using **BigQuery, dbt, and Python**.
-
-It simulates a real-world product analytics system used by companies to:
-- Understand customer lifecycle
-- Identify high-value and at-risk customers
-- Predict churn probability
-- Drive data-driven retention strategies
+# 🚀 Customer Retention Intelligence System
 
 ---
 
-## 🎯 Problem Statement
-Most companies do not lose customers suddenly — they lose them gradually.
+## 📌 Problem Statement
 
-This project aims to:
-- Identify churn risk early  
-- Segment customers based on behavior  
-- Analyze revenue contribution  
-- Enable targeted retention strategies  
+Most businesses don’t lose customers instantly — they lose them gradually over time.  
+However, identifying early churn signals and understanding customer behavior is difficult without a structured data system.
+
+This project addresses this by:
+- Detecting churn risk early  
+- Understanding customer purchase patterns  
+- Identifying revenue-driving segments  
+- Supporting data-driven retention strategies  
+
+---
+
+## 🎯 Goal / Purpose
+
+The goal of this project is to build an end-to-end system that:
+
+- Tracks customer lifecycle and behavior  
+- Segments customers using RFM analysis  
+- Predicts churn probability  
+- Helps businesses optimize revenue and retention strategies  
+
+---
+
+## 📊 Key Visuals (Dashboard)
+
+The Streamlit dashboard includes:
+
+- Total Customers (KPI)  
+- Total Revenue (KPI)  
+- Average Revenue per Customer  
+- Customer Segmentation (RFM-based)  
+- Churn Probability Distribution  
+- Revenue Trends over time  
+
+---
+
+## 📈 Business Impact / Insights
+
+- A large portion of customers are **one-time buyers**, indicating retention opportunities  
+- Revenue is concentrated among a **small group of high-value customers**  
+- High-risk customers with high revenue contribution were identified  
+- Churn prediction enables proactive engagement strategies  
+- Helps businesses prioritize marketing efforts effectively  
+
+---
+
+## 📸 Dashboard Screenshots
+
+![Dashboard Screenshot 1](https://github.com/JeeniyaShakya/customer-retention-revenue-optimization/blob/main/Screenshot%202026-03-25%20095021.png)  
+![Dashboard Screenshot 2](https://github.com/JeeniyaShakya/customer-retention-revenue-optimization/blob/main/Screenshot%202026-03-25%20095035.png)  
+
+---
+
+## 🌐 Live Application
+
+👉 [Click here to view the live app](YOUR_STREAMLIT_LINK)
+
+---
+
+## ⚙️ Techniques Used
+
+### 🔹 Data Engineering (dbt)
+- Data cleaning using staging models  
+- Fact table creation for transactions  
+- Mart layer for customer analytics  
+- SQL window functions:
+  - ROW_NUMBER()
+  - LAG()
+  - MIN() OVER()
+
+---
+
+### 🔹 Analytics & Machine Learning (Python)
+
+#### RFM Segmentation
+- Recency: Days since last purchase  
+- Frequency: Number of orders  
+- Monetary: Total revenue  
+
+#### Churn Prediction
+- Logistic Regression model  
+- Predicts probability of customer churn  
 
 ---
 
 ## 🧱 Tech Stack
 
-- **Data Warehouse:** BigQuery  
-- **Transformation Tool:** dbt  
-- **Analytics & ML:** Python (Pandas, Scikit-learn)  
-- **Visualization (Optional):** Power BI / Streamlit  
-
----
-
-## ⚙️ Data Modeling (dbt)
-
-### 🔹 Staging Layer
-- Cleaned and standardized raw datasets  
-- Converted timestamps and renamed columns  
-
-### 🔹 Fact Table
-**fact_customer_orders**
-- Combined orders, customers, and revenue  
-- One row per order  
-
-### 🔹 Mart Layer
-**mart_customer_retention**
-- Customer lifecycle metrics  
-- First purchase, repeat behavior  
-- Days between purchases  
-
----
-
-## 📊 Analytics Layer (Python)
-
-### 🔹 RFM Segmentation
-- **Recency:** Days since last purchase  
-- **Frequency:** Number of orders  
-- **Monetary:** Total revenue  
-
-Customers classified into:
-- Champions  
-- Loyal  
-- At Risk  
-- Lost  
-
----
-
-### 🔹 Churn Prediction
-- Built using Logistic Regression  
-- Features used:
-  - Recency  
-  - Frequency  
-  - Monetary  
-
-Output:
-- Probability of churn for each customer  
-
----
-
-## 🔁 Data Write-back
-
-Final analytics results were pushed back into BigQuery using:
-
-```python
-to_gbq(
-    churn_df,
-    "customer_retention.churn_prediction",
-    project_id="your_project_id",
-    if_exists="replace"
-)
-
+- BigQuery  
+- dbt  
+- Python (Pandas, Scikit-learn)  
+- Streamlit  
