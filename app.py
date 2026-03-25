@@ -21,5 +21,11 @@ def load_data():
 
 df = load_data()
 
+st.subheader("📊 Overview")
 
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Total Customers", df['customer_unique_id'].nunique())
+col2.metric("Total Revenue", round(df['Monetary'].sum(), 2))
+col3.metric("Avg Revenue", round(df['Monetary'].mean(), 2))
 
