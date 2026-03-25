@@ -84,3 +84,36 @@ st.subheader("⚠️ Churn Risk Distribution")
 churn_counts = filtered_df['Churn Risk'].value_counts()
 
 st.bar_chart(churn_counts)
+
+st.subheader("💰 Revenue by Segment")
+
+revenue_segment = filtered_df.groupby('Segment')['Monetary'].sum()
+
+st.bar_chart(revenue_segment)
+
+query2 = """
+SELECT *
+FROM `civil-partition-489110-t9.customer_retention.monthly_orders`
+"""
+
+df_trend = client.query(query2).to_dataframe()
+
+df_trend['Month'] = pd.to_datetime(df_trend['Month'])
+
+st.subheader("📈 Order Trend Over Time")
+
+st.line_chart(df_trend.set_index('Month')['Total_Orders'])
+
+st.subheader("🧠 Key Insights")
+
+st.write("""
+- Majority of customers are low frequency → retention opportunity
+- High-value customers contribute most revenue
+- Customers with high recency are more likely to churn
+- Target 'At Risk' segment for retention campaigns
+""")
+
+import plotly.express as px
+
+fig = px.bar(segment_counts, title="Customer Segments")
+st.plotly_chart(fig, use_container_width=True)
