@@ -2,6 +2,13 @@ import streamlit as st
 import pandas as pd
 from google.cloud import bigquery
 
+st.set_page_config(
+    page_title="Customer Retention Dashboard",
+    layout="wide"
+)
+
+st.title("📊 Customer Retention Intelligence System")
+
 client = bigquery.Client.from_service_account_info(
     st.secrets["gcp_service_account"]
 )
