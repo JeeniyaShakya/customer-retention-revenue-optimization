@@ -29,3 +29,21 @@ col1.metric("Total Customers", df['customer_unique_id'].nunique())
 col2.metric("Total Revenue", round(df['Monetary'].sum(), 2))
 col3.metric("Avg Revenue", round(df['Monetary'].mean(), 2))
 
+st.sidebar.header("🔍 Filters")
+
+segment_filter = st.sidebar.multiselect(
+    "Select Segment",
+    options=df['Segment'].unique(),
+    default=df['Segment'].unique()
+)
+
+churn_filter = st.sidebar.multiselect(
+    "Churn Risk",
+    options=df['Churn Risk'].unique(),
+    default=df['Churn Risk'].unique()
+)
+
+filtered_df = df[
+    (df['Segment'].isin(segment_filter)) &
+    (df['Churn Risk'].isin(churn_filter))
+]
