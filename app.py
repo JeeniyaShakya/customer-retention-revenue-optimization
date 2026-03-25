@@ -28,7 +28,7 @@ st.subheader("🔍 Data Preview")
 st.dataframe(df)
 
 st.subheader("📈 Basic Metrics")
-
+st.write(df.columns)
 col1, col2, col3 = st.columns(3)
 
 col1.metric("Total Customers", df['customer_unique_id'].nunique())
