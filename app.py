@@ -77,3 +77,9 @@ filtered_df = df[
     (df['Segment'].isin(segment_filter)) &
     (df['Churn Risk'].isin(churn_filter))
 ]
+
+st.subheader("📊 Customer Segmentation")
+
+segment_counts = filtered_df['Segment'].value_counts()
+
+st.bar_chart(segment_counts)
