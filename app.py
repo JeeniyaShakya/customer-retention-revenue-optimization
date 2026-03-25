@@ -24,9 +24,12 @@ def load_data():
     df = client.query(query).to_dataframe()
 
     st.write(df.columns)
-    
-    # ✅ CLEAN COLUMN NAMES (VERY IMPORTANT FIX)
-    df.columns = df.columns.str.strip().str.replace(" ", "_")
+df.columns = df.columns.str.strip().str.replace(" ", "_")
+
+# Create Churn_Risk if missing
+if 'Churn_Risk' not in df.columns:
+    if 'Churn' in df.columns:
+        df['Churn_Risk'] = df['Churn'].apply(lambda x: "High" if x == 1 else "Low")
     
     return df
 
