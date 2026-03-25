@@ -22,6 +22,8 @@ FROM `civil-partition-489110-t9.customer_retention.churn_prediction`
 @st.cache_data
 def load_data():
     df = client.query(query).to_dataframe()
+
+    st.write(df.columns)
     
     # ✅ CLEAN COLUMN NAMES (VERY IMPORTANT FIX)
     df.columns = df.columns.str.strip().str.replace(" ", "_")
