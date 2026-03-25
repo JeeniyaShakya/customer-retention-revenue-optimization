@@ -61,11 +61,6 @@ segment_filter = st.sidebar.multiselect(
     default=df['segment'].unique()
 )
 
-segment_filter = st.sidebar.multiselect(
-    "Select Segment",
-    options=df['Segment'].unique(),
-    default=df['Segment'].unique()
-)
 
 churn_filter = st.sidebar.multiselect(
     "Churn Risk",
@@ -74,13 +69,13 @@ churn_filter = st.sidebar.multiselect(
 )
 
 filtered_df = df[
-    (df['Segment'].isin(segment_filter)) &
+    (df['segment'].isin(segment_filter)) &
     (df['Churn Risk'].isin(churn_filter))
 ]
 
 st.subheader("📊 Customer Segmentation")
 
-segment_counts = filtered_df['Segment'].value_counts()
+segment_counts = filtered_df['segment'].value_counts()
 
 st.bar_chart(segment_counts)
 
