@@ -4,3 +4,4 @@ numpy
 scikit-learn
 pandas-gbq
 google-cloud-bigquery
+plotly
