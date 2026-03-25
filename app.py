@@ -31,6 +31,36 @@ col3.metric("Avg Revenue", round(df['Monetary'].mean(), 2))
 
 st.sidebar.header("🔍 Filters")
 
+# R Score (Recency: lower is better)
+df['r_score'] = pd.qcut(df['Recency'], 4, labels=[4,3,2,1])
+
+# F Score (Frequency: higher is better)
+df['f_score'] = pd.qcut(df['Frequency'].rank(method='first'), 4, labels=[1,2,3,4])
+
+# M Score (Monetary: higher is better)
+df['m_score'] = pd.qcut(df['Monetary'], 4, labels=[1,2,3,4])
+
+
+df['rfm_score'] = df['r_score'].astype(str) + df['f_score'].astype(str) + df['m_score'].astype(str)
+
+def segment_customer(row):
+    if row['m_score'] == 4 and row['r_score'] >= 3:
+        return "High Value Recent"
+    elif row['m_score'] == 4 and row['r_score'] <= 2:
+        return "At Risk High Value"
+    elif row['f_score'] == 1:
+        return "Low Value / One-time"
+    else:
+        return "Others"
+
+df['segment'] = df.apply(segment_customer, axis=1)
+
+segment_filter = st.sidebar.multiselect(
+    "Select Segment",
+    options=df['segment'].unique(),
+    default=df['segment'].unique()
+)
+
 segment_filter = st.sidebar.multiselect(
     "Select Segment",
     options=df['Segment'].unique(),
