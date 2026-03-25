@@ -83,3 +83,9 @@ st.subheader("📊 Customer Segmentation")
 segment_counts = filtered_df['Segment'].value_counts()
 
 st.bar_chart(segment_counts)
+
+st.subheader("⚠️ Churn Risk Distribution")
+
+churn_counts = filtered_df['Churn Risk'].value_counts()
+
+st.bar_chart(churn_counts)
