@@ -21,6 +21,5 @@ def load_data():
 
 df = load_data()
 
-# Debug (temporary)
-st.write("Columns:", df.columns)
+
 
