@@ -24,14 +24,3 @@ df = load_data()
 # Debug (temporary)
 st.write("Columns:", df.columns)
 
-# KPIs
-st.subheader("📊 Overview Metrics")
-
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Total Customers", df['customer_unique_id'].nunique())
-
-# 👉 Update column name after checking
-col2.metric("Total Revenue", round(df['total_revenue'].sum(), 2))
-
-col3.metric("Avg Revenue", round(df['total_revenue'].mean(), 2))
