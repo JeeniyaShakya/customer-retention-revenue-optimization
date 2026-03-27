@@ -234,4 +234,87 @@ fig_time = px.line(
 
 st.plotly_chart(fig_time, use_container_width=True)
 
+@st.cache_data
+def load_churn():
+    query = """
+    SELECT 
+        customer_unique_id,
+        recency,
+        frequency,
+        monetary,
+        segment,
+        churn
+    FROM `civil-partition-489110-t9.customer_retention.customer_analytics`
+    """
+    return client.query(query).to_dataframe()
+
+df_churn = load_churn()
+
+st.subheader("⚠️ Churn Risk Analysis")
+
+col1, col2 = st.columns(2)
+
+# -------------------- CHURN DISTRIBUTION --------------------
+churn_dist = df_churn["churn"].value_counts().reset_index()
+churn_dist.columns = ["churn", "count"]
+
+fig_churn = px.pie(
+    churn_dist,
+    names="churn",
+    values="count",
+    title="Customer Churn Distribution"
+)
+
+col1.plotly_chart(fig_churn, use_container_width=True)
+
+# -------------------- KPIs --------------------
+high_risk_customers = df_churn[df_churn["churn"] == "High"].shape[0]
+
+revenue_at_risk = df_churn[df_churn["churn"] == "High"]["monetary"].sum()
+
+total_customers = df_churn.shape[0]
+
+risk_percent = (high_risk_customers / total_customers) * 100
+
+col2.metric("High Risk Customers", f"{high_risk_customers:,}")
+col2.metric("Revenue at Risk", f"₹{revenue_at_risk:,.0f}")
+col2.metric("Risk %", f"{risk_percent:.2f}%")
+
+st.markdown("### 📊 Segment vs Churn")
+
+seg_churn = (
+    df_churn.groupby(["segment", "churn"])
+    .size()
+    .reset_index(name="count")
+)
+
+fig_seg_churn = px.bar(
+    seg_churn,
+    x="segment",
+    y="count",
+    color="churn",
+    barmode="group",
+    title="Churn Risk Across Segments"
+)
+
+st.plotly_chart(fig_seg_churn, use_container_width=True)
+
+st.markdown("### 💰 Revenue at Risk by Segment")
+
+risk_seg = (
+    df_churn[df_churn["churn"] == "High"]
+    .groupby("segment")["monetary"]
+    .sum()
+    .reset_index()
+)
+
+fig_risk_seg = px.bar(
+    risk_seg,
+    x="segment",
+    y="monetary",
+    title="Revenue at Risk (High Churn Customers)"
+)
+
+st.plotly_chart(fig_risk_seg, use_container_width=True)
+
 
