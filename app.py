@@ -317,4 +317,69 @@ fig_risk_seg = px.bar(
 
 st.plotly_chart(fig_risk_seg, use_container_width=True)
 
+df_orders["purchase_at"] = pd.to_datetime(df_orders["purchase_at"])
+
+st.subheader("📈 Revenue Trend & Forecast")
+
+# -------------------- MONTHLY REVENUE --------------------
+monthly_revenue = (
+    df_orders
+    .groupby(df_orders["purchase_at"].dt.to_period("M"))
+    ["total_revenue"]
+    .sum()
+    .reset_index()
+)
+
+monthly_revenue["purchase_at"] = monthly_revenue["purchase_at"].astype(str)
+
+
+fig_rev = px.line(
+    monthly_revenue,
+    x="purchase_at",
+    y="total_revenue",
+    title="Monthly Revenue Trend"
+)
+
+st.plotly_chart(fig_rev, use_container_width=True)
+
+# -------------------- FORECAST --------------------
+monthly_revenue["revenue_ma"] = (
+    monthly_revenue["total_revenue"]
+    .rolling(window=3)
+    .mean()
+)
+
+# Last 3 months avg → forecast
+last_ma = monthly_revenue["revenue_ma"].iloc[-1]
+
+# Create future months
+last_date = pd.to_datetime(monthly_revenue["purchase_at"].iloc[-1])
+
+future_months = pd.date_range(
+    start=last_date,
+    periods=4,
+    freq="M"
+)[1:]
+
+forecast_df = pd.DataFrame({
+    "purchase_at": future_months.astype(str),
+    "total_revenue": [last_ma] * 3
+})
+
+# Label data
+monthly_revenue["type"] = "Actual"
+forecast_df["type"] = "Forecast"
+
+combined = pd.concat([monthly_revenue, forecast_df])
+
+fig_forecast = px.line(
+    combined,
+    x="purchase_at",
+    y="total_revenue",
+    color="type",
+    title="Revenue Forecast (Next 3 Months)"
+)
+
+st.plotly_chart(fig_forecast, use_container_width=True)
+
 
