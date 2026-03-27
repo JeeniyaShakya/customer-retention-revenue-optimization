@@ -401,11 +401,12 @@ if customer_id:
     # Behavior data
     behavior_data = df_behavior[df_behavior["customer_unique_id"] == customer_id]
 
+    # ---------------- CHECK ----------------
     if rfm_data.empty:
         st.error("Customer not found")
-    else:
 
-                segment = rfm_data["Segment"].values[0]
+    else:
+        segment = rfm_data["Segment"].values[0]
 
         churn = churn_data["churn"].values[0] if not churn_data.empty else "Unknown"
 
