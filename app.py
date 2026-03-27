@@ -383,3 +383,75 @@ fig_forecast = px.line(
 st.plotly_chart(fig_forecast, use_container_width=True)
 
 
+st.subheader("🔍 Customer Deep Dive")
+
+customer_id = st.text_input("Enter Customer Unique ID")
+
+if customer_id:
+
+    # RFM data
+    rfm_data = df_rfm[df_rfm["customer_unique_id"] == customer_id]
+
+    # Churn data
+    churn_data = df_churn[df_churn["customer_unique_id"] == customer_id]
+
+    # Orders data
+    orders_data = df_orders[df_orders["customer_unique_id"] == customer_id]
+
+    # Behavior data
+    behavior_data = df_behavior[df_behavior["customer_unique_id"] == customer_id]
+
+    if rfm_data.empty:
+        st.error("Customer not found")
+    else:
+
+                segment = rfm_data["Segment"].values[0]
+
+        churn = churn_data["churn"].values[0] if not churn_data.empty else "Unknown"
+
+        total_revenue = orders_data["total_revenue"].sum()
+
+        total_orders = orders_data.shape[0]
+
+        avg_gap = behavior_data["days_since_last_purchase"].mean()
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        col1.metric("Segment", segment)
+        col2.metric("Churn Risk", churn)
+        col3.metric("Total Revenue", f"₹{total_revenue:,.0f}")
+        col4.metric("Total Orders", total_orders)
+
+        st.markdown("### 📊 Behavior Insight")
+
+        st.write(f"Average Days Between Purchases: {avg_gap:.2f}")
+
+        st.markdown("### 💡 Recommendation")
+
+        if churn == "High" and "High Value" in segment:
+            st.error("🚨 High-value customer at risk → Offer discounts or loyalty perks immediately")
+
+        elif churn == "High":
+            st.warning("⚠️ Customer likely to churn → Send re-engagement campaigns")
+
+        elif churn == "Medium":
+            st.info("ℹ️ Monitor customer → Provide personalized offers")
+
+        elif churn == "Low" and "High Value" in segment:
+            st.success("✅ Loyal high-value customer → Reward & retain")
+
+        else:
+            st.write("Maintain engagement")
+
+        st.markdown("### 📅 Purchase History")
+
+        if not orders_data.empty:
+            fig_cust = px.line(
+                orders_data.sort_values("purchase_at"),
+                x="purchase_at",
+                y="total_revenue",
+                title="Customer Purchase Timeline"
+            )
+
+            st.plotly_chart(fig_cust, use_container_width=True)
+
