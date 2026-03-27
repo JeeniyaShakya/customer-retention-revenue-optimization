@@ -1,69 +1,65 @@
 import streamlit as st
-import pandas as pd
 from google.cloud import bigquery
 
-# -------------------- CONFIG --------------------
-st.set_page_config(page_title="Customer Retention Dashboard", layout="wide")
+# Initialize client
+client = bigquery.Client()
 
-# -------------------- BIGQUERY CONNECTION --------------------
-@st.cache_resource
-def get_client():
-    return bigquery.Client.from_service_account_info(
-        st.secrets["gcp_service_account"]
-    )
-
-client = get_client()
-
-# -------------------- LOAD RFM DATA --------------------
+# -------------------------------
+# Load RFM Table
+# -------------------------------
 @st.cache_data
 def load_rfm():
     query = """
     SELECT 
-        customer_unique_id,
-        Recency,
-        Frequency,
-        Monetary,
-        Segment
-    FROM `civil-partition-489110-t9.customer_retention.rfm_segmentation`
+        customer_id,
+        recency,
+        frequency,
+        monetary,
+        rfm_segment
+    FROM `your_project.your_dataset.rfm_table`
     """
     return client.query(query).to_dataframe()
 
-
-# -------------------- LOAD ORDERS DATA --------------------
+# -------------------------------
+# Load Orders Table
+# -------------------------------
 @st.cache_data
 def load_orders():
     query = """
     SELECT 
-        customer_unique_id,
         order_id,
-        purchase_at,
-        total_revenue
-    FROM `civil-partition-489110-t9.customer_retention.fact_customer_orders`
+        customer_id,
+        order_date,
+        order_value
+    FROM `your_project.your_dataset.orders_table`
     """
     return client.query(query).to_dataframe()
 
-
-# -------------------- LOAD CUSTOMER BEHAVIOR --------------------
+# -------------------------------
+# Load Behavior Table
+# -------------------------------
 @st.cache_data
 def load_behavior():
     query = """
     SELECT 
-        customer_unique_id,
+        customer_id,
         order_id,
-        purchase_at,
-        customer_type,
-        days_since_last_purchase
-    FROM `civil-partition-489110-t9.customer_retention.customer_behavior`
+        product_category,
+        warehouse_id,
+        order_hour
+    FROM `your_project.your_dataset.behavior_table`
     """
     return client.query(query).to_dataframe()
 
 
-# -------------------- LOAD ALL DATA --------------------
-df_rfm = load_rfm()
-df_orders = load_orders()
-df_behavior = load_behavior()
+# -------------------------------
+# Call functions
+# -------------------------------
+rfm_df = load_rfm()
+orders_df = load_orders()
+behavior_df = load_behavior()
 
-
-st.write("RFM:", df_rfm.shape)
-st.write("Orders:", df_orders.shape)
-st.write("Behavior:", df_behavior.shape)
+# Debug prints (optional)
+st.write("RFM:", rfm_df.shape)
+st.write("Orders:", orders_df.shape)
+st.write("Behavior:", behavior_df.shape)
