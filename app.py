@@ -64,10 +64,6 @@ df_rfm = load_rfm()
 df_orders = load_orders()
 df_behavior = load_behavior()
 
-st.write("RFM:", df_rfm.shape)
-st.write("Orders:", df_orders.shape)
-st.write("Behavior:", df_behavior.shape)
-
 
 # -------------------- KPI CALCULATIONS --------------------
 
@@ -198,24 +194,6 @@ fig_gap = px.histogram(
 
 col2.plotly_chart(fig_gap, use_container_width=True)
 
-st.markdown("### ⏳ Purchase Frequency by Customer Type")
-
-avg_gap = (
-    df_behavior.dropna(subset=["days_since_last_purchase"])
-    .groupby("customer_type")["days_since_last_purchase"]
-    .mean()
-    .reset_index()
-)
-
-fig_avg_gap = px.bar(
-    avg_gap,
-    x="customer_type",
-    y="days_since_last_purchase",
-    title="Average Days Between Purchases (New vs Repeat)",
-    text_auto=True
-)
-
-st.plotly_chart(fig_avg_gap, use_container_width=True)
 
 st.markdown("### 📅 Orders Over Time")
 
