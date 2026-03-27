@@ -95,3 +95,77 @@ col2.metric("Total Orders", f"{total_orders:,}")
 col3.metric("Total Revenue", f"${total_revenue:,.0f}")
 col4.metric("Repeat Rate", f"₹{total_revenue:,.0f}")
 col5.metric("Avg Days Between Orders", f"{avg_days_between:.1f}")
+
+
+# -------------------- SEGMENT DISTRIBUTION --------------------
+
+st.subheader("📊 Customer Segmentation")
+
+segment_counts = df_rfm["Segment"].value_counts().reset_index()
+segment_counts.columns = ["Segment", "Customers"]
+
+fig_seg = px.bar(
+    segment_counts,
+    x="Segment",
+    y="Customers",
+    text="Customers",
+    title="Customer Distribution by Segment"
+)
+
+st.plotly_chart(fig_seg, use_container_width=True)
+
+
+# -------------------- REVENUE BY SEGMENT --------------------
+
+rfm_orders = df_orders.merge(df_rfm, on="customer_unique_id", how="left")
+
+revenue_segment = (
+    rfm_orders.groupby("Segment")["total_revenue"]
+    .sum()
+    .reset_index()
+    .sort_values(by="total_revenue", ascending=False)
+)
+
+fig_rev = px.bar(
+    revenue_segment,
+    x="Segment",
+    y="total_revenue",
+    text_auto=True,
+    title="Revenue Contribution by Segment"
+)
+
+st.plotly_chart(fig_rev, use_container_width=True)
+
+# -------------------- RFM SCATTER --------------------
+
+fig_scatter = px.scatter(
+    df_rfm,
+    x="Frequency",
+    y="Monetary",
+    color="Segment",
+    size="Monetary",
+    hover_data=["customer_unique_id"],
+    title="Customer Value Distribution (Frequency vs Monetary)"
+)
+
+st.plotly_chart(fig_scatter, use_container_width=True)
+
+# -------------------- RECENCY BY SEGMENT --------------------
+
+recency_segment = (
+    df_rfm.groupby("Segment")["Recency"]
+    .mean()
+    .reset_index()
+)
+
+fig_rec = px.bar(
+    recency_segment,
+    x="Segment",
+    y="Recency",
+    text_auto=True,
+    title="Average Recency by Segment (Lower = Better)"
+)
+
+st.plotly_chart(fig_rec, use_container_width=True)
+
+
