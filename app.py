@@ -1,3 +1,16 @@
+st.markdown(
+    """
+    <h1 style='text-align: center;'>
+    📊 Customer Retention Intelligence System
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown(
+    "<p style='text-align: center; color: gray;'>Understand, Predict, and Act on Customer Behavior</p>",
+    unsafe_allow_html=True
+)
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
