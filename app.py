@@ -277,25 +277,6 @@ fig_seg_churn = px.bar(
 
 st.plotly_chart(fig_seg_churn, use_container_width=True)
 
-st.markdown("### 💰 Revenue at Risk by Segment")
-
-risk_seg = (
-    df_churn[df_churn["churn"] == "High"]
-    .groupby("segment")["monetary"]
-    .sum()
-    .reset_index()
-)
-
-fig_risk_seg = px.bar(
-    risk_seg,
-    x="segment",
-    y="monetary",
-    title="Revenue at Risk (High Churn Customers)"
-)
-
-st.plotly_chart(fig_risk_seg, use_container_width=True)
-
-df_orders["purchase_at"] = pd.to_datetime(df_orders["purchase_at"])
 
 st.subheader("📈 Revenue Trend & Forecast")
 
