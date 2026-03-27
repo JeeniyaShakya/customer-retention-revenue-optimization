@@ -63,3 +63,8 @@ behavior_df = load_behavior()
 st.write("RFM:", rfm_df.shape)
 st.write("Orders:", orders_df.shape)
 st.write("Behavior:", behavior_df.shape)
+
+
+st.write(rfm_df.head())
+st.write(orders_df.head())
+st.write(behavior_df.head())
