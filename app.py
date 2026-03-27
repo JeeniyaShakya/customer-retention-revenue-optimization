@@ -117,7 +117,7 @@ st.plotly_chart(fig_seg, use_container_width=True)
 
 # -------------------- REVENUE BY SEGMENT --------------------
 
-rfm_orders = df_orders.merge(df_rfm, on="customer_unique_id", how="left")
+rfm_orders = df_orders.merge(df_rfm, on="customer_unique_id", how="inner")
 
 revenue_segment = (
     rfm_orders.groupby("Segment")["total_revenue"]
