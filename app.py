@@ -66,3 +66,32 @@ df_behavior = load_behavior()
 st.write("RFM:", df_rfm.shape)
 st.write("Orders:", df_orders.shape)
 st.write("Behavior:", df_behavior.shape)
+
+
+# -------------------- KPI CALCULATIONS --------------------
+
+total_customers = df_rfm["customer_unique_id"].nunique()
+
+total_orders = df_orders["order_id"].nunique()
+
+total_revenue = df_orders["total_revenue"].sum()
+
+# Repeat Customers %
+repeat_customers = df_behavior[df_behavior["customer_type"] == "Repeat"]["customer_unique_id"].nunique()
+repeat_rate = (repeat_customers / total_customers) * 100
+
+# Avg Days Between Purchases
+avg_days_between = df_behavior["days_since_last_purchase"].dropna().mean()
+
+
+# -------------------- KPI DISPLAY --------------------
+
+st.subheader("📌 Key Business Metrics")
+
+col1, col2, col3, col4, col5 = st.columns(5)
+
+col1.metric("Total Customers", f"{total_customers:,}")
+col2.metric("Total Orders", f"{total_orders:,}")
+col3.metric("Total Revenue", f"${total_revenue:,.0f}")
+col4.metric("Repeat Rate", f"₹{total_revenue:,.0f}")
+col5.metric("Avg Days Between Orders", f"{avg_days_between:.1f}")
