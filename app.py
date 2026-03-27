@@ -169,4 +169,69 @@ fig_rec = px.bar(
 
 st.plotly_chart(fig_rec, use_container_width=True)
 
+st.subheader("🔁 Customer Behavior Analysis")
+
+col1, col2 = st.columns(2)
+
+# -------------------- NEW vs REPEAT --------------------
+behavior_counts = df_behavior["customer_type"].value_counts().reset_index()
+behavior_counts.columns = ["customer_type", "count"]
+
+fig_behavior = px.pie(
+    behavior_counts,
+    names="customer_type",
+    values="count",
+    title="New vs Repeat Customers"
+)
+
+col1.plotly_chart(fig_behavior, use_container_width=True)
+
+# -------------------- DAYS BETWEEN PURCHASES --------------------
+df_gap = df_behavior.dropna(subset=["days_since_last_purchase"])
+
+fig_gap = px.histogram(
+    df_gap,
+    x="days_since_last_purchase",
+    nbins=50,
+    title="Days Between Purchases Distribution"
+)
+
+col2.plotly_chart(fig_gap, use_container_width=True)
+
+st.markdown("### ⏳ Purchase Frequency by Customer Type")
+
+avg_gap = (
+    df_behavior.dropna(subset=["days_since_last_purchase"])
+    .groupby("customer_type")["days_since_last_purchase"]
+    .mean()
+    .reset_index()
+)
+
+fig_avg_gap = px.bar(
+    avg_gap,
+    x="customer_type",
+    y="days_since_last_purchase",
+    title="Average Days Between Purchases (New vs Repeat)",
+    text_auto=True
+)
+
+st.plotly_chart(fig_avg_gap, use_container_width=True)
+
+st.markdown("### 📅 Orders Over Time")
+
+orders_timeline = (
+    df_behavior.groupby(df_behavior["purchase_at"].dt.date)
+    .size()
+    .reset_index(name="orders")
+)
+
+fig_time = px.line(
+    orders_timeline,
+    x="purchase_at",
+    y="orders",
+    title="Orders Trend Over Time"
+)
+
+st.plotly_chart(fig_time, use_container_width=True)
+
 
