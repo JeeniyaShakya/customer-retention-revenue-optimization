@@ -1,3 +1,11 @@
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+from google.cloud import bigquery
+
+# -------------------- CONFIG --------------------
+st.set_page_config(page_title="Customer Retention Dashboard", layout="wide")
+
 st.markdown(
     """
     <h1 style='text-align: center;'>
@@ -11,13 +19,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-from google.cloud import bigquery
-
-# -------------------- CONFIG --------------------
-st.set_page_config(page_title="Customer Retention Dashboard", layout="wide")
 
 # -------------------- BIGQUERY CONNECTION --------------------
 @st.cache_resource
