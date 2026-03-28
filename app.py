@@ -77,6 +77,26 @@ df_orders = df_orders[
 df_rfm = df_rfm[df_rfm["Segment"].isin(selected_segments)]
 df_churn = df_churn[df_churn["segment"].isin(selected_segments)]
 
+df_behavior = df_behavior[
+    (df_behavior["purchase_at"].dt.date >= date_range[0]) &
+    (df_behavior["purchase_at"].dt.date <= date_range[1])
+]
+
+# -------------------- KPI CALCULATIONS --------------------
+total_customers = df_rfm["customer_unique_id"].nunique()
+
+total_orders = df_orders["order_id"].nunique()
+
+total_revenue = df_orders["total_revenue"].sum()
+
+repeat_customers = df_behavior[
+    df_behavior["customer_type"] == "Repeat"
+]["customer_unique_id"].nunique()
+
+repeat_rate = (repeat_customers / total_customers) * 100 if total_customers > 0 else 0
+
+avg_days_between = df_behavior["days_since_last_purchase"].dropna().mean()
+
 # -------------------- KPI SECTION (ALWAYS VISIBLE) --------------------
 st.subheader("📌 Key Business Metrics")
 
