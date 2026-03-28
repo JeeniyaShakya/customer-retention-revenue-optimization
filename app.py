@@ -3,6 +3,80 @@ import pandas as pd
 import plotly.express as px
 from google.cloud import bigquery
 
+# -------------------- CONFIG --------------------
+st.set_page_config(page_title="Customer Retention Dashboard", layout="wide")
+
+st.markdown("<h1 style='text-align: center;'>📊 Customer Retention Intelligence System</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Understand, Predict, and Act on Customer Behavior</p>", unsafe_allow_html=True)
+
+# -------------------- BIGQUERY --------------------
+@st.cache_resource
+def get_client():
+    return bigquery.Client.from_service_account_info(st.secrets["gcp_service_account"])
+
+client = get_client()
+
+# -------------------- LOAD DATA --------------------
+@st.cache_data
+def load_rfm():
+    return client.query("""
+        SELECT customer_unique_id, Recency, Frequency, Monetary, Segment
+        FROM `civil-partition-489110-t9.customer_retention.rfm_segmentation`
+    """).to_dataframe()
+
+@st.cache_data
+def load_orders():
+    return client.query("""
+        SELECT customer_unique_id, order_id, purchase_at, total_revenue
+        FROM `civil-partition-489110-t9.customer_retention.fact_customer_orders`
+    """).to_dataframe()
+
+@st.cache_data
+def load_behavior():
+    return client.query("""
+        SELECT customer_unique_id, order_id, purchase_at, customer_type, days_since_last_purchase
+        FROM `civil-partition-489110-t9.customer_retention.customer_behavior`
+    """).to_dataframe()
+
+@st.cache_data
+def load_churn():
+    return client.query("""
+        SELECT customer_unique_id, recency, frequency, monetary, segment, churn
+        FROM `civil-partition-489110-t9.customer_retention.customer_analytics`
+    """).to_dataframe()
+
+df_rfm = load_rfm()
+df_orders = load_orders()
+df_behavior = load_behavior()
+df_churn = load_churn()
+
+# -------------------- PREPROCESS --------------------
+df_orders["purchase_at"] = pd.to_datetime(df_orders["purchase_at"])
+df_behavior["purchase_at"] = pd.to_datetime(df_behavior["purchase_at"])
+
+# -------------------- SIDEBAR FILTERS --------------------
+st.sidebar.header("🔎 Filters")
+
+date_range = st.sidebar.date_input(
+    "Select Date Range",
+    [df_orders["purchase_at"].min(), df_orders["purchase_at"].max()]
+)
+
+selected_segments = st.sidebar.multiselect(
+    "Select Segment",
+    options=df_rfm["Segment"].unique(),
+    default=df_rfm["Segment"].unique()
+)
+
+# Apply filters
+df_orders = df_orders[
+    (df_orders["purchase_at"].dt.date >= date_range[0]) &
+    (df_orders["purchase_at"].dt.date <= date_range[1])
+]
+
+df_rfm = df_rfm[df_rfm["Segment"].isin(selected_segments)]
+df_churn = df_churn[df_churn["segment"].isin(selected_segments)]
+
 # -------------------- KPI SECTION (ALWAYS VISIBLE) --------------------
 st.subheader("📌 Key Business Metrics")
 
