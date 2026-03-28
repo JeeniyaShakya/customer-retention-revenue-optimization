@@ -1,3 +1,8 @@
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+from google.cloud import bigquery
+
 # -------------------- KPI SECTION (ALWAYS VISIBLE) --------------------
 st.subheader("📌 Key Business Metrics")
 
