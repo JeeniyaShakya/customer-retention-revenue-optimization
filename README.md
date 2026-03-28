@@ -58,7 +58,7 @@ The Streamlit dashboard includes:
 
 ## 🌐 Live Application
 
-👉 [Click here to view the live app](YOUR_STREAMLIT_LINK)
+👉 [Click here to view the live app](https://customer-retention-revenue-optimization-n54x9exdh8bdqvtlkd2v8e.streamlit.app/)
 
 ---
 
